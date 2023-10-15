@@ -1,26 +1,44 @@
 import { Injectable } from '@nestjs/common';
 import { CreateExpenseDto } from './dto/create-expense.dto';
 import { UpdateExpenseDto } from './dto/update-expense.dto';
+import { Expense } from './entities/expense.entity';
+import { randomUUID } from 'crypto';
 
 @Injectable()
 export class ExpenseService {
-  create(createExpenseDto: CreateExpenseDto) {
-    return 'This action adds a new expense';
+  private expenses: Expense[] = [];
+  create(createExpenseDto: CreateExpenseDto): Expense {
+    const expense = {
+      id: randomUUID(),
+      ...createExpenseDto,
+    };
+    this.expenses.push(expense);
+    console.log(this.expenses);
+    return expense;
   }
 
   findAll() {
-    return `This action returns all expense`;
+    return this.expenses;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} expense`;
+  findOne(id: string) {
+    return this.expenses.find((expense) => expense.id === id);
   }
 
-  update(id: number, updateExpenseDto: UpdateExpenseDto) {
-    return `This action updates a #${id} expense`;
+  update(id: string, updateExpenseDto: UpdateExpenseDto) {
+    const targetIndex = this.expenses.findIndex((expense) => expense.id === id);
+    this.expenses[targetIndex] = {
+      ...this.expenses[targetIndex],
+      ...updateExpenseDto,
+    };
+    console.log(this.expenses[targetIndex]);
+    return this.expenses[targetIndex];
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} expense`;
+  remove(id: string) {
+    const targetIndex = this.expenses.findIndex((expense) => expense.id === id);
+    this.expenses.splice(targetIndex, 1);
+
+    return this.expenses;
   }
 }
