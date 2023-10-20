@@ -14,10 +14,7 @@ export class ExpenseService {
   ) {}
 
   async create(createExpenseDto: CreateExpenseDto): Promise<Expense> {
-    const expense = this.expenseRepository.create({
-      id: randomUUID(),
-      ...createExpenseDto,
-    });
+    const expense = this.expenseRepository.create(createExpenseDto);
     await this.expenseRepository.save(expense);
     return expense;
   }
