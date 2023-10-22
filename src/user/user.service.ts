@@ -54,7 +54,7 @@ export class UserService {
 
   async loginUser(
     loginUserDto: LoginUserDto,
-  ): Promise<{ access_token: string }> {
+  ): Promise<Partial<User> & { access_token: string }> {
     const { email, password } = loginUserDto;
 
     const user = await this.userRepository.findOne({ where: { email } });
@@ -71,6 +71,9 @@ export class UserService {
 
     return {
       access_token: await this.jwtService.signAsync({ email, password }),
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
     };
   }
 }
